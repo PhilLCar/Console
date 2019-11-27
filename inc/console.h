@@ -8,11 +8,14 @@
 
 class Console {
 public:
-    enum BoxDrawing {
+    enum LineType {
         LINE = 0,
         LINE_DOUBLE,
         LINE_BOLD,
         LINE_NONE,
+    };
+
+    enum BoxDrawing {
         LINE_HORIZONTAL = 0x2500,
         LINE_HORIZONTAL_BOLD,
         LINE_VERTICAL,
@@ -186,11 +189,15 @@ public:
 
     };
 
+    enum TextType {
+
+        TEXT_BOLD      = 1,
+        TEXT_UNDERLINE = 4,
+        TEXT_REVERSED  = 7,
+    };
+
     enum Color {
         COLOR_RESET = 0,
-        COLOR_BOLD,
-        COLOR_UNDERLINE = 4,
-        COLOR_REVERSED = 7,
         COLOR_BLACK = 30,
         COLOR_RED,
         COLOR_GREEN,
@@ -218,11 +225,12 @@ public:
 
 public:
     static void color(Color, bool = false);
+    static void text(TextType);
     static void clear();
-    static void drawBox(int, int, int, int, std::vector<Color>, BoxDrawing = LINE);
-    static void drawTitleBox(int, int, int, int, std::string, std::vector<Color>, BoxDrawing = LINE);
-    static void drawTextBox(int, int, int, int, std::string, std::vector<Color>, BoxDrawing = LINE);
-    static void drawTitleTextBox(int, int, int, int, std::string, std::string, std::vector<Color>, BoxDrawing = LINE);
+    static void drawBox(int, int, int, int, std::vector<Color>, LineType = LINE);
+    static void drawTitleBox(int, int, int, int, std::string, std::vector<Color>, LineType = LINE);
+    static void drawTextBox(int, int, int, int, std::string, std::vector<Color>, LineType = LINE);
+    static void drawTitleTextBox(int, int, int, int, std::string, std::string, std::vector<Color>, LineType = LINE);
     static void drawSymbol(int, int, GeometricShape, std::vector<Color>);
     static void drawLabel(int, int, std::string, std::vector<Color>);
 

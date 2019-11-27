@@ -8,12 +8,17 @@ void Console::color(Color color, bool bright)
     std::cout << "m";
 }
 
+void Console::text(TextType textType)
+{
+    std::cout << unicode_to_utf8(ESCAPE) << "[" << textType << "m";
+}
+
 void Console::clear()
 {
     std::cout << unicode_to_utf8(ESCAPE) << "[2J";
 }
 
-void Console::drawBox(int x, int y, int width, int height, std::vector<Color> colors, BoxDrawing line)
+void Console::drawBox(int x, int y, int width, int height, std::vector<Color> colors, LineType line)
 {
     if (width < 2 || height < 2) return;
 
@@ -77,7 +82,7 @@ void Console::drawBox(int x, int y, int width, int height, std::vector<Color> co
     restore();
 }
 
-void Console::drawTitleBox(int x, int y, int width, int height, std::string title, std::vector<Color> colors, BoxDrawing line)
+void Console::drawTitleBox(int x, int y, int width, int height, std::string title, std::vector<Color> colors, LineType line)
 {
     if (width < 5 || height < 5) return;
 
@@ -133,7 +138,7 @@ void Console::drawTitleBox(int x, int y, int width, int height, std::string titl
     // Title
     move(x, y + 1);
     std::cout << v;
-    color(COLOR_BOLD);
+    text(TEXT_BOLD);
     if (title.length() <= width - 2) {
         std::cout << title;
         for (int i = 0; i < width - 2 - title.length(); i++) std::cout << " ";
@@ -167,7 +172,7 @@ void Console::drawTitleBox(int x, int y, int width, int height, std::string titl
     restore();
 }
 
-void Console::drawTextBox(int x, int y, int width, int height, std::string content, std::vector<Color> colors, BoxDrawing line)
+void Console::drawTextBox(int x, int y, int width, int height, std::string content, std::vector<Color> colors, LineType line)
 {
     if (width < 2 || height < 2) return;
 
@@ -247,7 +252,7 @@ void Console::drawTextBox(int x, int y, int width, int height, std::string conte
     restore();
 }
 
-void Console::drawTitleTextBox(int x, int y, int width, int height, std::string title, std::string content, std::vector<Color> colors, BoxDrawing line)
+void Console::drawTitleTextBox(int x, int y, int width, int height, std::string title, std::string content, std::vector<Color> colors, LineType line)
 {
     if (width < 5 || height < 5) return;
 
@@ -303,7 +308,7 @@ void Console::drawTitleTextBox(int x, int y, int width, int height, std::string 
     // Title
     move(x, y + 1);
     std::cout << v;
-    color(COLOR_BOLD);
+    text(TEXT_BOLD);
     if (title.length() <= width - 2) {
         std::cout << title;
         for (int i = 0; i < width - 2 - title.length(); i++) std::cout << " ";
