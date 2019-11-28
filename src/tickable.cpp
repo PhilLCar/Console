@@ -60,6 +60,11 @@ namespace tickable {
         return clock == nullptr;
     }
 
+    Clock *ITickable::getClock()
+    {
+        return clock;
+    }
+
     void ITickable::ctick()
     {
         if (!onPause) tick();
@@ -72,13 +77,21 @@ namespace tickable {
     unsigned long Clock::currentID    = 0;
     Clock         Clock::defaultClock = Clock();
    
-    Clock::Clock() :
+    Clock::Clock() : Clock(1.0)
+    {
+    }
+
+    Clock::Clock(double frequency) :
+        ticking(false),
+        currentTick(0),
         tickables()
     {
+        setFrequency(frequency);
     }
 
     Clock::~Clock()
     {
+        stop();
         for (auto *tickable : tickables) {
             tickable->clock = nullptr;
         }
@@ -102,6 +115,23 @@ namespace tickable {
         tickables.pop_back();
     }
 
+    void Clock::start()
+    {
+        if (!ticking) {
+            ticking = true;
+            execution = new std::thread(&Clock::autotick, this);
+        }
+    }
+
+    void Clock::stop()
+    {
+        if (ticking) {
+            ticking = false;
+            execution->join();
+            delete execution;
+        }
+    }
+
     void Clock::tick()
     {
         for (auto *tickable : tickables) {
@@ -109,12 +139,33 @@ namespace tickable {
         }
     }
 
-    void Clock::defaultTick() {
-        defaultClock.tick();
+    void Clock::setFrequency(double frequency)
+    {
+        sleepTime.tv_sec = static_cast<time_t>(1.0 / frequency);
+        sleepTime.tv_nsec = static_cast<long>(NANOSECONDS_IN_SECOND / frequency) % static_cast<long>(NANOSECONDS_IN_SECOND);
+    }
+
+    double Clock::getFrequency()
+    {
+        return sleepTime.tv_sec + static_cast<double>(sleepTime.tv_nsec) / NANOSECONDS_IN_SECOND; 
+    }
+
+    unsigned long Clock::getTick()
+    {
+        return currentTick;
     }
 
     Clock &Clock::getDefaultClock() 
     {
         return defaultClock;
+    }
+
+    void Clock::autotick() 
+    {
+        while (ticking) {
+            nanosleep(&sleepTime, nullptr);
+            tick();
+            currentTick += 1;
+        }
     }
 }
