@@ -7,6 +7,7 @@
 
 #define NANOSECONDS_IN_SECOND  1000000000.0
 #define MICROSECONDS_IN_SECOND 1000000.0
+#define OVERRUN_TICKS_LIMIT    1000
 
 namespace tickable {
     class Clock;
@@ -45,13 +46,15 @@ namespace tickable {
 
         void add(ITickable &);
         void remove(ITickable &);
-        void start();
-        void stop();
-        void tick();
 
-        void          setFrequency(double);
-        double        getFrequency();
-        unsigned long getTick();
+        void          start();
+        void          stop();
+        void          tick();
+        unsigned long clock();
+        bool          overrunning();
+
+        void   setFrequency(double);
+        double getFrequency();
 
         void operator +=(ITickable &tickable) {
             add(tickable);
@@ -70,6 +73,7 @@ namespace tickable {
 
         std::thread             *execution;
         bool                     ticking;
+        bool                     overrun;
         unsigned long            currentTick;
         struct timespec          sleepTime;
         std::vector<ITickable *> tickables;
