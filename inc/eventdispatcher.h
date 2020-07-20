@@ -20,7 +20,7 @@ namespace event {
             unsigned int value;
         } InputEvent;
 
-        static EventDispatcher &getEventDispatcher(int);
+        static EventDispatcher *getEventDispatcher(int);
         static void             stopAllDispatchers();
 
     private:
