@@ -84,6 +84,7 @@ namespace tickable {
     Clock::Clock(double frequency) :
         ticking(false),
         overrun(false),
+        nOverrun(0),
         currentTick(0),
         tickables()
     {
@@ -148,7 +149,7 @@ namespace tickable {
 
     double Clock::getFrequency()
     {
-        return sleepTime.tv_sec + static_cast<double>(sleepTime.tv_nsec) / NANOSECONDS_IN_SECOND; 
+        return 1.0 / (sleepTime.tv_sec + static_cast<double>(sleepTime.tv_nsec) / NANOSECONDS_IN_SECOND); 
     }
 
     unsigned long Clock::clock()
@@ -168,13 +169,19 @@ namespace tickable {
 
     void Clock::autotick() 
     {
+        // This calculates the number of ticks in 5% of the iteration period
+        int padding = 0.05 * (1.0 / getFrequency()) * CLOCKS_PER_SEC;
+
         while (ticking) {
             std::thread sleepThread(nanosleep(&sleepTime, nullptr));
             tick();
             clock_t ticks = ::clock();
             sleepThread.join();
-            ticks = clock() - ticks;
-            overrun = ticks > OVERRUN_TICKS_LIMIT;
+            ticks = ::clock() - ticks;
+            // If joining the sleep thread takes less than 5% of the iteration period
+            // the iteration is deemed to be overruning
+            overrun = ticks < padding;
+            if (overrun) nOverrun++;
             currentTick += 1;
         }
     }
