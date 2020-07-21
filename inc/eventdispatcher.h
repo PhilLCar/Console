@@ -1,44 +1,31 @@
 #ifndef INC_EVENTDISPATCHER
 #define INC_EVENTDISPATCHER
 
-#include <thread>
-#include <fstream>
-#include <time.h>
-#include <string>
-#include <mutex>
+#include <event.h>
+#include <tickable.h>
 
-#define EVENT_FILE_NUMBER 30
-#define EVENT_BUFFER_SIZE 1024
+#include <set>
 
 namespace event {
-    class EventDispatcher {
-    public:
-        typedef struct input_event {
-            struct timeval time;
-            unsigned short type;
-            unsigned short code;
-            unsigned int value;
-        } InputEvent;
+  class EventDispatcher : private tickable::ITickable {
+  public:
+    static EventDispatcher *getDispatcher();
 
-        static EventDispatcher *getEventDispatcher(int);
-        static void             stopAllDispatchers();
+    void registerBuffer(EventBuffer *);
+    void unregisterBuffer(EventBuffer *);
+    void subscribe(Event *);
+    void unsubscribe(Event *);
 
-    private:
-        EventDispatcher(int);
-        ~EventDispatcher();
+  private:
+    EventDispatcher();
+    void tick() override;
 
-        void read();
+  private:
+    static EventDispatcher *instance;
 
-        static EventDispatcher *eventDispatchers[EVENT_FILE_NUMBER];
-
-        int           eventFileNumber;
-        std::ifstream eventFile;
-        int           eventBufferPosition;
-        InputEvent    eventBuffer[EVENT_BUFFER_SIZE];
-        std::thread  *readThread;
-    };
-
-    void operator >>(std::ifstream &, EventDispatcher::InputEvent &);
+    std::set<EventBuffer &> eventBuffers;
+    std::set<Event &>       events;
+  };
 }
 
 #endif

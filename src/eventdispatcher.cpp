@@ -1,32 +1,43 @@
 #include <eventdispatcher.h>
 
 namespace event {
+  EventDispatcher::EventDispatcher *instance = NULL;
 
+  EventDispatcher::EventDispatcher()
+  {
+    instance = this;
+  }
 
+  EventDispatcher *EventDispatcher::getDispatcher() {
+    if (!instance) EventDispatcher();
+    return instance;
+  }
 
+  void EventDispatcher::registerBuffer(EventBuffer *eventBuffer) {
+    eventBuffers.insert(*eventBuffer);
+  }
 
-    EventDispatcher::EventDispatcher(int eventFileNumber) :
-        eventFileNumber(eventFileNumber),
-        eventBufferPosition(0)
-    {
-        std::string fileName = "/dev/input/event" + eventFileNumber;
-        eventFile = std::ifstream(fileName);
+  void EventDispatcher::unregisterBuffer(EventBuffer *eventBuffer) {
+    eventBuffers.erase(*eventBuffer);
+  }
 
-        readThread = new std::thread(&EventDispatcher::read, this);
-    }
+  void EventDispatcher::subscribe(Event *event) {
+    events.insert(*event);
+  }
+  
+  void EventDispatcher::unsubscribe(Event *event) {
+    events.erase(*event);
+  }
 
-    void EventDispatcher::read()
-    {
-        while (true) {
-            eventFile >> eventBuffer[eventBufferPosition++];
+  void EventDispatcher::tick() {
+    for (std::set<EventBuffer &>::iterator it = eventBuffers.begin(); it != eventBuffers.end(); it++) {
+      EventBuffer &eb = *it;
+      for (int i = eb.start; i != eb.end; i = (i + 1) % EVENT_BUFFER_SIZE) {
+        for (std::set<Event &>::iterator jt = events.begin(); jt != events.end(); jt++) {
+          Event &e = *jt;
+          if (e.check(eb.buffer[i])) e.fire(eb.buffer[i]);
         }
+      }
     }
-
-    void operator >>(std::ifstream &in, EventDispatcher::InputEvent &event)
-    {
-        unsigned char *memPtr = (unsigned char *)&event;
-        for (int i = 0; i < sizeof(EventDispatcher::InputEvent); i++) {
-            in >> memPtr[i];
-        }
-    }
+  }
 }

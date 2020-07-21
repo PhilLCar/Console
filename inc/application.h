@@ -6,8 +6,7 @@
 
 namespace console {
     class Application
-    {
-        
+    {      
         static int main(int argc, char **argv);
     };
 }
