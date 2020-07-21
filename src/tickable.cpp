@@ -99,24 +99,6 @@ namespace tickable {
         }
     }
 
-    void Clock::add(ITickable &tickable)
-    {
-        tickable.id = currentID++;
-        tickables.push_back(&tickable);
-    }
-
-    void Clock::remove(ITickable &tickable)
-    {
-        bool scratch = false;
-        for (int i = 0; i < tickables.size() - 1; i++) {
-            if (tickable.id == tickables[i]->id) scratch = true;
-            if (scratch) {
-                tickables[i] = tickables[i + 1];
-            }
-        }
-        tickables.pop_back();
-    }
-
     void Clock::start()
     {
         if (!ticking) {
@@ -162,6 +144,16 @@ namespace tickable {
         return overrun;
     }
 
+    void Clock::operator +=(ITickable &tickable)
+    {
+        tickables.insert(&tickable);
+    }
+
+    void Clock::operator -=(ITickable &tickable)
+    {
+        tickables.erase(&tickable);
+    }
+
     Clock &Clock::getDefaultClock() 
     {
         return defaultClock;
@@ -173,7 +165,7 @@ namespace tickable {
         int padding = 0.05 * (1.0 / getFrequency()) * CLOCKS_PER_SEC;
 
         while (ticking) {
-            std::thread sleepThread(nanosleep(&sleepTime, nullptr));
+            std::thread sleepThread(&nanosleep, &sleepTime, nullptr);
             tick();
             clock_t ticks = ::clock();
             sleepThread.join();

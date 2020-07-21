@@ -4,6 +4,7 @@
 namespace console {
     class Application
     {      
+    public:
         static int main(int argc, char **argv);
     };
 }

@@ -14,8 +14,8 @@
 namespace event {
     class EventFileParser {
     public:
-        static void getEventBuffer(EventBuffer *, int);
-        static void stopParsingAllFiles();
+        static EventBuffer *getEventBuffer(int);
+        static void         stopParsingAllFiles();
 
     private:
         EventFileParser(int);

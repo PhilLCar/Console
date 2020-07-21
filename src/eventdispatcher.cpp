@@ -1,7 +1,7 @@
 #include <eventdispatcher.h>
 
 namespace event {
-  EventDispatcher *instance = NULL;
+  EventDispatcher *EventDispatcher::instance = NULL;
 
   EventDispatcher::EventDispatcher()
   {
@@ -9,7 +9,7 @@ namespace event {
   }
 
   EventDispatcher *EventDispatcher::getDispatcher() {
-    if (!instance) EventDispatcher();
+    if (!instance) new EventDispatcher();
     return instance;
   }
 
@@ -39,5 +39,13 @@ namespace event {
         }
       }
     }
+  }
+
+  bool operator<(const std::reference_wrapper<EventBuffer> a, const std::reference_wrapper<EventBuffer> b) {
+    return a.get().buffer < b.get().buffer;
+  }
+
+  bool operator<(const std::reference_wrapper<Event> a, const std::reference_wrapper<Event> b) {
+    return a.get().getUID() < b.get().getUID();
   }
 }

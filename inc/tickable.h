@@ -1,7 +1,7 @@
 #ifndef INC_TICKABLE
 #define INC_TICKABLE
 
-#include <vector>
+#include <set>
 #include <thread>
 #include <time.h>
 
@@ -43,9 +43,6 @@ namespace tickable {
         Clock(double);
         ~Clock();
 
-        void add(ITickable &);
-        void remove(ITickable &);
-
         void          start();
         void          stop();
         void          tick();
@@ -55,12 +52,8 @@ namespace tickable {
         void   setFrequency(double);
         double getFrequency();
 
-        void operator +=(ITickable &tickable) {
-            add(tickable);
-        }
-        void operator -=(ITickable &tickable) {
-            remove(tickable);
-        }
+        void operator +=(ITickable &tickable);
+        void operator -=(ITickable &tickable);
 
         static Clock &getDefaultClock();
     private:
@@ -70,13 +63,13 @@ namespace tickable {
         static unsigned long currentID;
         static Clock         defaultClock;
 
-        std::thread             *execution;
-        bool                     ticking;
-        bool                     overrun;
-        int                      nOverrun;
-        unsigned long            currentTick;
-        struct timespec          sleepTime;
-        std::vector<ITickable *> tickables;
+        std::thread           *execution;
+        bool                   ticking;
+        bool                   overrun;
+        int                    nOverrun;
+        unsigned long          currentTick;
+        struct timespec        sleepTime;
+        std::set<ITickable *>  tickables;
     };
 
     class Dummy : public ITickable {

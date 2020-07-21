@@ -20,14 +20,16 @@ namespace event {
         eventFile.close();
     }
 
-    void EventFileParser::getEventBuffer(EventBuffer *eventBuffer, int fileNumber)
+    EventBuffer *EventFileParser::getEventBuffer(int fileNumber)
     {
         if (!eventFileParsers[fileNumber]) {
             eventFileParsers[fileNumber] = new EventFileParser(fileNumber);
         }
-        eventBuffer->start  = 0;
-        eventBuffer->end    = eventFileParsers[fileNumber]->eventBufferPosition;
-        eventBuffer->buffer = eventFileParsers[fileNumber]->eventBuffer;
+        return new EventBuffer{
+            .start  = 0,
+            .end    = eventFileParsers[fileNumber]->eventBufferPosition,
+            .buffer = eventFileParsers[fileNumber]->eventBuffer
+        };
     }
 
     void EventFileParser::read()
@@ -43,6 +45,7 @@ namespace event {
         unsigned char *memPtr = (unsigned char *)&event;
         for (int i = 0; i < sizeof(InputEvent); i++) {
             in >> memPtr[i];
+            printf(":%d:\n", memPtr[i]);
         }
     }
 }

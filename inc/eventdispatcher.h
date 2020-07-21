@@ -7,7 +7,7 @@
 #include <set>
 
 namespace event {
-  class EventDispatcher : private tickable::ITickable {
+  class EventDispatcher : public tickable::ITickable {
   public:
     static EventDispatcher *getDispatcher();
 
@@ -15,10 +15,10 @@ namespace event {
     void unregisterBuffer(EventBuffer *);
     void subscribe(Event *);
     void unsubscribe(Event *);
+    void tick() override;
 
   private:
     EventDispatcher();
-    void tick() override;
 
   private:
     static EventDispatcher *instance;
@@ -27,13 +27,8 @@ namespace event {
     std::set<std::reference_wrapper<Event>>       events;
   };
 
-  bool operator<(const std::reference_wrapper<EventBuffer> a, const std::reference_wrapper<EventBuffer> b) {
-    return a.get().buffer < b.get().buffer;
-  }
-
-  bool operator<(const std::reference_wrapper<Event> a, const std::reference_wrapper<Event> b) {
-    return a.get().getUID() < b.get().getUID();
-  }
+  bool operator<(const std::reference_wrapper<EventBuffer>, const std::reference_wrapper<EventBuffer>);
+  bool operator<(const std::reference_wrapper<Event>, const std::reference_wrapper<Event>);
 }
 
 #endif
