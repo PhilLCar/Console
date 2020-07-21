@@ -1,0 +1,35 @@
+In file included from inc/tickable.h:5:0,
+                 from src/tickable.cpp:1:
+/usr/include/c++/7/thread: In instantiation of ‘struct std::thread::_Invoker<std::tuple<int> >’:
+/usr/include/c++/7/thread:127:22:   required from ‘std::thread::thread(_Callable&&, _Args&& ...) [with _Callable = int; _Args = {}]’
+src/tickable.cpp:176:67:   required from here
+/usr/include/c++/7/thread:240:2: error: no matching function for call to ‘std::thread::_Invoker<std::tuple<int> >::_M_invoke(std::thread::_Invoker<std::tuple<int> >::_Indices)’
+  operator()()
+  ^~~~~~~~
+/usr/include/c++/7/thread:231:4: note: candidate: template<long unsigned int ..._Ind> decltype (std::__invoke((_S_declval<_Ind>)()...)) std::thread::_Invoker<_Tuple>::_M_invoke(std::_Index_tuple<_Ind ...>) [with long unsigned int ..._Ind = {_Ind ...}; _Tuple = std::tuple<int>]
+    _M_invoke(_Index_tuple<_Ind...>)
+    ^~~~~~~~~
+/usr/include/c++/7/thread:231:4: note:   template argument deduction/substitution failed:
+/usr/include/c++/7/thread: In substitution of ‘template<long unsigned int ..._Ind> decltype (std::__invoke(_S_declval<_Ind>()...)) std::thread::_Invoker<std::tuple<int> >::_M_invoke<_Ind ...>(std::_Index_tuple<_Ind1 ...>) [with long unsigned int ..._Ind = {0}]’:
+/usr/include/c++/7/thread:240:2:   required from ‘struct std::thread::_Invoker<std::tuple<int> >’
+/usr/include/c++/7/thread:127:22:   required from ‘std::thread::thread(_Callable&&, _Args&& ...) [with _Callable = int; _Args = {}]’
+src/tickable.cpp:176:67:   required from here
+/usr/include/c++/7/thread:233:29: error: no matching function for call to ‘__invoke(std::__tuple_element_t<0, std::tuple<int> >)’
+    -> decltype(std::__invoke(_S_declval<_Ind>()...))
+                ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/c++/7/tuple:41:0,
+                 from /usr/include/c++/7/bits/unique_ptr.h:37,
+                 from /usr/include/c++/7/memory:80,
+                 from /usr/include/c++/7/thread:39,
+                 from inc/tickable.h:5,
+                 from src/tickable.cpp:1:
+/usr/include/c++/7/bits/invoke.h:89:5: note: candidate: template<class _Callable, class ... _Args> constexpr typename std::__invoke_result<_Functor, _ArgTypes>::type std::__invoke(_Callable&&, _Args&& ...)
+     __invoke(_Callable&& __fn, _Args&&... __args)
+     ^~~~~~~~
+/usr/include/c++/7/bits/invoke.h:89:5: note:   template argument deduction/substitution failed:
+/usr/include/c++/7/bits/invoke.h: In substitution of ‘template<class _Callable, class ... _Args> constexpr typename std::__invoke_result<_Functor, _ArgTypes>::type std::__invoke(_Callable&&, _Args&& ...) [with _Callable = int; _Args = {}]’:
+/usr/include/c++/7/thread:233:29:   required by substitution of ‘template<long unsigned int ..._Ind> decltype (std::__invoke(_S_declval<_Ind>()...)) std::thread::_Invoker<std::tuple<int> >::_M_invoke<_Ind ...>(std::_Index_tuple<_Ind1 ...>) [with long unsigned int ..._Ind = {0}]’
+/usr/include/c++/7/thread:240:2:   required from ‘struct std::thread::_Invoker<std::tuple<int> >’
+/usr/include/c++/7/thread:127:22:   required from ‘std::thread::thread(_Callable&&, _Args&& ...) [with _Callable = int; _Args = {}]’
+src/tickable.cpp:176:67:   required from here
+/usr/include/c++/7/bits/invoke.h:89:5: error: no type named ‘type’ in ‘struct std::__invoke_result<int>’

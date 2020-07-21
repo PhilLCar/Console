@@ -24,17 +24,19 @@ namespace event {
       InputEvent *buffer;
   } EventBuffer;
 
-  typedef void (*EventFunction)(Event *, InputEvent &);
-
   class Event {
   public:
+    typedef void (*EventFunction)(Event *, InputEvent &);
+
     Event();
     ~Event();
 
     bool check(InputEvent&);
     void fire(InputEvent&);
+    long getUID();
 
   private:
+    long uid;
     std::set<EventFunction> calls;
   };
 }

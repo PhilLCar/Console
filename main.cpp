@@ -1,3 +1,11 @@
+// #include <application.h>
+
+// namespace console {
+//     int Application::main(int argc, char **argv) {
+
+//     }
+// }
+
 #include <console.h>
 #include <tickable.h>
 

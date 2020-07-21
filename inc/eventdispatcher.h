@@ -23,9 +23,17 @@ namespace event {
   private:
     static EventDispatcher *instance;
 
-    std::set<EventBuffer &> eventBuffers;
-    std::set<Event &>       events;
+    std::set<std::reference_wrapper<EventBuffer>> eventBuffers;
+    std::set<std::reference_wrapper<Event>>       events;
   };
+
+  bool operator<(const std::reference_wrapper<EventBuffer> a, const std::reference_wrapper<EventBuffer> b) {
+    return a.get().buffer < b.get().buffer;
+  }
+
+  bool operator<(const std::reference_wrapper<Event> a, const std::reference_wrapper<Event> b) {
+    return a.get().getUID() < b.get().getUID();
+  }
 }
 
 #endif

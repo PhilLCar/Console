@@ -213,7 +213,7 @@ namespace drawing {
             ARROW_LOOP_TAIL_LEFT,
             ARROW_LOOP_TAIL_RIGHT,
             ARROW_SQUIGGLY_LEFT_RIGHT,
-            ARROW_STRIKED_LEFT_RIGHT,
+            ARROW_STRIKED_LEFT_RIGHT_2,
             ARROW_LIGHTNING_DOWN,
             ARROW_CORNER_DOWN_TO_LEFT,
             ARROW_CORNER_DOWN_TO_RIGHT,
@@ -289,9 +289,9 @@ namespace drawing {
             ARROW_STRIKED_LEFT,
             ARROW_STRIKED_RIGHT,
             ARROW_STRIKED_LEFT_RIGHT,
-            ARROW_DOUBLE_STRIKED_LEFT,
-            ARROW_DOUBLE_STRIKED_RIGHT,
-            ARROW_DOUBLE_STRIKED_LEFT_RIGHT,
+            ARROW_STRIKED_DOUBLE_LEFT,
+            ARROW_STRIKED_DOUBLE_RIGHT,
+            ARROW_STRIKED_DOUBLE_LEFT_RIGHT,
             ARROW_OUTLINE_POINTER_LEFTDOUBLE,
             ARROW_OUTLINE_POINTER_RIGHT,
             ARROW_OUTLINE_POINTER_LEFT_RIGHT
@@ -386,14 +386,14 @@ namespace drawing {
             CIRCLE_WITH_BOTTOM_LEFT_QUARTER,
             CIRCLE_WITH_BOTTOM_RIGHT_QUARTER,
             CIRCLE_WITH_TOP_RIGHT_QUARTER,
-            CORNER_TOP_LEFT,
-            CORNER_TOP_RIGHT,
-            CORNER_BOTTOM_LEFT,
+            L_TOP_LEFT,
+            L_TOP_RIGHT,
+            L_BOTTOM_LEFT,
             SQUARE,
             SQUARE_FULL,
             SQUARE_SMALL,
             SQUARE_SMALL_FULL,
-            CORNER_BOTTOM_RIGHT
+            L_BOTTOM_RIGHT
         };
 
         enum TextType {
@@ -450,5 +450,4 @@ namespace drawing {
         static void restore();
     };
 }
-
-#endif
+#endif 

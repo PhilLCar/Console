@@ -1,9 +1,11 @@
 #include <event.h>
 #include <eventdispatcher.h>
+#include <uidgenerator.h>
 
 namespace event {
 
   Event::Event() {
+    uid = console::getNextID();
     EventDispatcher::getDispatcher()->subscribe(this);
   }
 
@@ -26,5 +28,9 @@ namespace event {
     for (std::set<EventFunction>::iterator it = calls.begin(); it != calls.end(); it++) {
       (*it)(this, inputEvent);
     }
+  }
+
+  long Event::getUID() {
+    return uid;
   }
 }

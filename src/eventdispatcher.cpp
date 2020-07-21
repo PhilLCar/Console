@@ -1,7 +1,7 @@
 #include <eventdispatcher.h>
 
 namespace event {
-  EventDispatcher::EventDispatcher *instance = NULL;
+  EventDispatcher *instance = NULL;
 
   EventDispatcher::EventDispatcher()
   {
@@ -30,10 +30,10 @@ namespace event {
   }
 
   void EventDispatcher::tick() {
-    for (std::set<EventBuffer &>::iterator it = eventBuffers.begin(); it != eventBuffers.end(); it++) {
+    for (std::set<std::reference_wrapper<EventBuffer>>::iterator it = eventBuffers.begin(); it != eventBuffers.end(); it++) {
       EventBuffer &eb = *it;
       for (int i = eb.start; i != eb.end; i = (i + 1) % EVENT_BUFFER_SIZE) {
-        for (std::set<Event &>::iterator jt = events.begin(); jt != events.end(); jt++) {
+        for (std::set<std::reference_wrapper<Event>>::iterator jt = events.begin(); jt != events.end(); jt++) {
           Event &e = *jt;
           if (e.check(eb.buffer[i])) e.fire(eb.buffer[i]);
         }
