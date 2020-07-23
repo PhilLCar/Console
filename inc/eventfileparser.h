@@ -4,19 +4,12 @@
 #include <event.h>
 
 #include <thread>
-#include <time.h>
-#include <string>
-#include <mutex>
-#include <string>
-#include <poll.h>
-#include <unistd.h>
-#include <fcntl.h>
+#include <fstream>
 
 #define EVENT_FILE_NUMBER 30
 #define EVENT_TIMEOUT_MS  -1
 
 namespace event {
-    typedef struct pollfd PollFD;
 
     class EventFileParser {
     public:
@@ -31,11 +24,11 @@ namespace event {
 
         static EventFileParser *eventFileParsers[EVENT_FILE_NUMBER];
 
-        int           eventFileNumber;
-        PollFD        eventPollFD[1];
-        int           eventBufferPosition;
-        InputEvent    eventBuffer[EVENT_BUFFER_SIZE];
-        std::thread  *readThread;
+        int            eventFileNumber;
+        std::ifstream  eventFile;
+        int            eventBufferPosition;
+        InputEvent     eventBuffer[EVENT_BUFFER_SIZE];
+        std::thread   *readThread;
     };
 }
 
