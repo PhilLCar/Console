@@ -32,10 +32,10 @@ namespace event {
   void EventDispatcher::tick() {
     for (std::set<std::reference_wrapper<EventBuffer>>::iterator it = eventBuffers.begin(); it != eventBuffers.end(); it++) {
       EventBuffer &eb = *it;
-      for (int i = eb.start; i != eb.end; i = (i + 1) % EVENT_BUFFER_SIZE) {
+      for (; eb.start != eb.end; eb.start = (eb.start + 1) % EVENT_BUFFER_SIZE) {
         for (std::set<std::reference_wrapper<Event>>::iterator jt = events.begin(); jt != events.end(); jt++) {
           Event &e = *jt;
-          if (e.check(eb.buffer[i])) e.fire(eb.buffer[i]);
+          if (e.check(eb.buffer[eb.start])) e.fire(eb.buffer[eb.start]);
         }
       }
     }
