@@ -7,7 +7,6 @@
 #include <fstream>
 
 #define EVENT_FILE_NUMBER 30
-#define EVENT_TIMEOUT_MS  -1
 
 namespace event {
 
