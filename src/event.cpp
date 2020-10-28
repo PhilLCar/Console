@@ -4,13 +4,23 @@
 
 namespace event {
 
+  EventBuffer::EventBuffer()
+    : start(0)
+    , end(0) {
+    EventDispatcher::getDispatcher().registerBuffer(this);
+  }
+
+  EventBuffer::~EventBuffer() {
+    EventDispatcher::getDispatcher().unregisterBuffer(this);
+  }
+
   Event::Event() {
     uid = console::getNextID();
-    EventDispatcher::getDispatcher()->subscribe(this);
+    EventDispatcher::getDispatcher().subscribe(this);
   }
 
   Event::~Event() {
-    EventDispatcher::getDispatcher()->unsubscribe(this);
+    EventDispatcher::getDispatcher().unsubscribe(this);
   }
 
   bool Event::check(InputEvent &) {
@@ -27,7 +37,7 @@ namespace event {
         << std::endl;
     log.close();
     for (std::set<EventFunction>::iterator it = calls.begin(); it != calls.end(); it++) {
-      (*it)(this, inputEvent);
+      (*it)(*this, inputEvent);
     }
   }
 

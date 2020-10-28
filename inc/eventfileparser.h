@@ -12,8 +12,9 @@ namespace event {
 
     class EventFileParser {
     public:
-        static EventBuffer *getEventBuffer(int);
-        static void         stopParsingAllFiles();
+        static void init(int);
+        static void kill(int);
+        static void killAll();
 
     private:
         EventFileParser(int);
@@ -22,11 +23,10 @@ namespace event {
         void read();
 
         static EventFileParser *eventFileParsers[EVENT_FILE_NUMBER];
+        static EventBuffer     *eventBuffers[EVENT_FILE_NUMBER];
 
         int            eventFileNumber;
         std::ifstream  eventFile;
-        int            eventBufferPosition;
-        InputEvent     eventBuffer[EVENT_BUFFER_SIZE];
         std::thread   *readThread;
     };
 }

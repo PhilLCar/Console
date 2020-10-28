@@ -4,7 +4,7 @@
 namespace console {
   long currentID = 0;
   
-  long getNextID() {
+  static long getNextID() {
     return currentID++;
   }
 }

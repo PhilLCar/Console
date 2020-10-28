@@ -3,10 +3,31 @@
 namespace event {
 
     EventFileParser *EventFileParser::eventFileParsers[EVENT_FILE_NUMBER] = {};
+    EventBuffer     *EventFileParser::eventBuffers[EVENT_FILE_NUMBER]     = {};
+
+    void EventFileParser::init(int fileNumber)
+    {
+        if (!eventFileParsers[fileNumber]) {
+            eventFileParsers[fileNumber] = new EventFileParser(fileNumber);
+            eventBuffers[fileNumber]     = new EventBuffer();
+        }
+    }
+
+    void EventFileParser::kill(int fileNumber) {
+        delete eventFileParsers[fileNumber];
+        eventFileParsers[fileNumber] = NULL;
+        delete eventBuffers[fileNumber];
+        eventBuffers[fileNumber] = NULL;
+    }
+
+    void EventFileParser::killAll() {
+        for (int i = 0; i < EVENT_FILE_NUMBER; i++) {
+            if (eventFileParsers[i]) kill(i);
+        }
+    }
 
     EventFileParser::EventFileParser(int eventFileNumber) :
-        eventFileNumber(eventFileNumber),
-        eventBufferPosition(0)
+        eventFileNumber(eventFileNumber)
     {
         std::string fileName = std::string("/dev/input/event") + std::to_string(eventFileNumber);
         eventFile = std::ifstream(fileName, std::ios_base::binary);
@@ -18,24 +39,13 @@ namespace event {
         delete readThread;
     }
 
-    EventBuffer *EventFileParser::getEventBuffer(int fileNumber)
-    {
-        if (!eventFileParsers[fileNumber]) {
-            eventFileParsers[fileNumber] = new EventFileParser(fileNumber);
-        }
-        return new EventBuffer {
-            .start  = 0,
-            .end    = eventFileParsers[fileNumber]->eventBufferPosition,
-            .buffer = eventFileParsers[fileNumber]->eventBuffer
-        };
-    }
-
     void EventFileParser::read()
     {
         int result;
         while (true) {
-            eventFile.read((char*)&eventBuffer[eventBufferPosition], sizeof(InputEvent));
-            eventBufferPosition = (eventBufferPosition + 1) % EVENT_BUFFER_SIZE;
+            EventBuffer *eb = eventBuffers[eventFileNumber];
+            eventFile.read((char*)&eb[eb->end], sizeof(InputEvent));
+            eb->end = (eb->end + 1) % EVENT_BUFFER_SIZE;
         }
     }
 }

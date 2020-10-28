@@ -9,20 +9,24 @@ int main(int argc, char **argv) {
   tickable::Clock uiClock(10.0); // 10Hz
   tickable::Clock evClock(60.0); // 60Hz
   // EVENTS
-  event::EventDispatcher *evd = event::EventDispatcher::getDispatcher();
-  evd->initiate(evClock);
+  event::EventDispatcher &evd = event::EventDispatcher::getDispatcher();
+  evd.initiate(evClock);
 
-  event::EventBuffer *mouseBuffer = event::EventFileParser::getEventBuffer(5);
-  evd->registerBuffer(mouseBuffer);
+  #ifdef MOUSE_EVENTS_H
+  event::EventFileParser::init(5);
+  event::MouseEvents::activate();
+  #endif
 
-  event::Event dummy;
   // START
   evClock.start();
 
   console::Application::main(argc, argv);
 
-  evd->unregisterBuffer(mouseBuffer);
-  delete mouseBuffer;
+  #ifdef MOUSE_EVENTS_H
+  event::EventFilerParser::kill(5);
+  event::MouseEvents::deactivate();
+  #endif
+
   // STOP
   evClock.stop();
 }

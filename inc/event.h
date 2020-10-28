@@ -11,22 +11,25 @@
 #define EVENT_LOG         "/var/log/events.log"
 
 namespace event {
-  typedef struct input_event {
+  struct InputEvent {
       struct timeval time;
       unsigned short type;
       unsigned short code;
-      unsigned int value;
-  } InputEvent;
+      unsigned int   value;
+  };
 
-  typedef struct event_buffer {
+  struct EventBuffer {
       int         start;
-      int        &end;
-      InputEvent *buffer;
-  } EventBuffer;
+      int         end;
+      InputEvent  buffer[EVENT_BUFFER_SIZE];
+
+      EventBuffer();
+      ~EventBuffer();
+  };
 
   class Event {
   public:
-    typedef void (*EventFunction)(Event *, InputEvent &);
+    typedef void (*EventFunction)(Event &, InputEvent &);
 
     Event();
     ~Event();
