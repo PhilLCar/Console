@@ -1,5 +1,5 @@
-#ifndef MOUSE_EVENTS_H
-#define MOUSE_EVENTS_H
+#ifndef INC_MOUSE_EVENTS
+#define INC_MOUSE_EVENTS
 
 #include <event.h>
 

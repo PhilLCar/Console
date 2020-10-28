@@ -29,9 +29,9 @@ namespace event {
 
   class Event {
   public:
-    typedef void (*EventFunction)(Event &, InputEvent &);
+    typedef void (*EventFunction)(void *, InputEvent &);
 
-    Event();
+    Event(void *);
     ~Event();
 
     bool check(InputEvent&);
@@ -39,7 +39,8 @@ namespace event {
     long getUID();
 
   private:
-    long uid;
+    long  uid;
+    void *sender;
     std::set<EventFunction> calls;
   };
 }

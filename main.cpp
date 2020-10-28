@@ -1,7 +1,5 @@
 #include <application.h>
 #include <iostream>
-#include <event.h>
-#include <mouseevents.h>
 
 namespace console {
     int Application::main(int argc, char **argv) {

@@ -7,7 +7,7 @@ namespace event
   void MouseEvents::activate() {
     // Here create all events that relate to mouse
     // by overloading the check function
-    events[MOUSE_DOWN] = new Event();
+    events[MOUSE_DOWN] = new Event(NULL);
   }
 
   void MouseEvents::deactivate() {

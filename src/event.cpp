@@ -6,7 +6,9 @@ namespace event {
 
   EventBuffer::EventBuffer()
     : start(0)
-    , end(0) {
+    , end(0)
+    , buffer{}
+  {
     EventDispatcher::getDispatcher().registerBuffer(this);
   }
 
@@ -14,8 +16,10 @@ namespace event {
     EventDispatcher::getDispatcher().unregisterBuffer(this);
   }
 
-  Event::Event() {
-    uid = console::getNextID();
+  Event::Event(void *sender) 
+    : uid(console::getNextID())
+    , sender(sender)
+  {
     EventDispatcher::getDispatcher().subscribe(this);
   }
 
@@ -37,7 +41,7 @@ namespace event {
         << std::endl;
     log.close();
     for (std::set<EventFunction>::iterator it = calls.begin(); it != calls.end(); it++) {
-      (*it)(*this, inputEvent);
+      (*it)(sender, inputEvent);
     }
   }
 

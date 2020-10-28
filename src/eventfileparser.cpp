@@ -3,21 +3,17 @@
 namespace event {
 
     EventFileParser *EventFileParser::eventFileParsers[EVENT_FILE_NUMBER] = {};
-    EventBuffer     *EventFileParser::eventBuffers[EVENT_FILE_NUMBER]     = {};
 
     void EventFileParser::init(int fileNumber)
     {
         if (!eventFileParsers[fileNumber]) {
             eventFileParsers[fileNumber] = new EventFileParser(fileNumber);
-            eventBuffers[fileNumber]     = new EventBuffer();
         }
     }
 
     void EventFileParser::kill(int fileNumber) {
         delete eventFileParsers[fileNumber];
         eventFileParsers[fileNumber] = NULL;
-        delete eventBuffers[fileNumber];
-        eventBuffers[fileNumber] = NULL;
     }
 
     void EventFileParser::killAll() {
@@ -30,22 +26,25 @@ namespace event {
         eventFileNumber(eventFileNumber)
     {
         std::string fileName = std::string("/dev/input/event") + std::to_string(eventFileNumber);
-        eventFile = std::ifstream(fileName, std::ios_base::binary);
-        readThread = new std::thread(&EventFileParser::read, this);
+        eventFile   = std::ifstream(fileName, std::ios_base::binary);
+        eventBuffer = new EventBuffer();
+        readThread  = new std::thread(&EventFileParser::read, this);
     }
 
     EventFileParser::~EventFileParser()
     {
+        pthread_cancel(readThread->native_handle());
+        readThread->join();
         delete readThread;
+        delete eventBuffer;
     }
 
     void EventFileParser::read()
     {
         int result;
         while (true) {
-            EventBuffer *eb = eventBuffers[eventFileNumber];
-            eventFile.read((char*)&eb[eb->end], sizeof(InputEvent));
-            eb->end = (eb->end + 1) % EVENT_BUFFER_SIZE;
+            eventFile.read((char*)&eventBuffer->buffer[eventBuffer->end], sizeof(InputEvent));
+            eventBuffer->end = (eventBuffer->end + 1) % EVENT_BUFFER_SIZE;
         }
     }
 }
