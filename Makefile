@@ -1,7 +1,7 @@
 # The following variables need to be set prior to including library.mk
 
 # Library name
-NAME = collection
+NAME = console
 
 # Versioning
 include ver/version.mk
