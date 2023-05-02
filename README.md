@@ -1,2 +1,2 @@
 # Console (CUT)
-Console utilities for C++
+Console utilities for C++.
